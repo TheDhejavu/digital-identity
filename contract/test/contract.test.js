@@ -16,7 +16,7 @@ contract.createIdentity('', JSON.stringify(
 
 
 // Create new org
-console.log("NEW ORganisation")
+console.log("NEW ORGANISATION")
 contract.createOrg('', JSON.stringify(
     {
         name: 'GtBank',

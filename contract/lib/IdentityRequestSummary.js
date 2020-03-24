@@ -17,6 +17,9 @@ class IdentityRequestSummary {
 
     this.identityAddress = args.identityAddress;
     this.description = args.description;
+    this.userAddress = args.userAddress;
+    this.orgAddress = args.orgAddress;
+    this.granted = false;
     this.id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     if (this.__isContract) {
         delete this.__isContract;

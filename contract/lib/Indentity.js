@@ -43,7 +43,7 @@ class Indentity {
     return encrypted;
   }
 
-  async decrypt(ctx, private_key, encrypted) {
+  static async decrypt(ctx, private_key, encrypted) {
     // Decrypt
     const key = new NodeRSA(private_key)
     const decrypted = key.decrypt(encrypted, 'base64');
