@@ -8,7 +8,7 @@ The traditional identity systems of today are fragmented, insecure, and exclusiv
 
 ### Flow Diagram 1
 
-<img width="200" alt="Digital identity logo" src="https://raw.githubusercontent.com/TheDhejavu/node-digital-identity/master/assets/digital-identity.png">
+<img alt="Digital identity logo" src="https://raw.githubusercontent.com/TheDhejavu/node-digital-identity/master/assets/digital-identity.png">
 
 ## Framework & Tools
 - NodeJS (API & Smart contract)
