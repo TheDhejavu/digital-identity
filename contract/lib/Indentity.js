@@ -1,7 +1,7 @@
 
 'use strict';
 const NodeRSA = require('node-rsa');
-const fs = require('fs');
+const crypto = require("crypto");
 
 class Indentity {
 
@@ -20,40 +20,34 @@ class Indentity {
    * @returns - organization object
    */
   constructor(ctx, args) {
-
-    if (this.validateOrganization(ctx, voterId)) {
-
-      this.firstName = args.firstName;
-      this.email = args.email;
-      this.passCode = args.passCode;
-      this.phoneNumber = args.phoneNumber;
-      this.lastName = args.lastName;
-      this.residentialAddress = args.residentialAddress;
-      this.id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-      this.type = 'user';
-      if (this.__isContract) {
-        delete this.__isContract;
-      }
-
-      return this;
-    } else {
-      throw new Error ('An Error Occurred ');
+    this.firstName = args.firstName;
+    this.email = args.email;
+    this.passCode = args.passCode;
+    this.phoneNumber = args.phoneNumber;
+    this.lastName = args.lastName;
+    this.residentialAddress = args.residentialAddress;
+    this.id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    this.address = crypto.randomBytes(20).toString('hex');
+    this.type = 'user';
+    if (this.__isContract) {
+      delete this.__isContract;
     }
+    return this;
   }
 
   async encrypt(ctx, public_key) {
     // Encrypt
     const key = new NodeRSA(public_key)
-    const encrypted = key.encrypt(text, 'base64');
+    const encrypted = key.encrypt(JSON.stringify(this), 'base64');
     console.log('encrypted: ', encrypted);
     return encrypted;
   }
 
-  async decrypt(ctx, private_key) {
+  async decrypt(ctx, private_key, encrypted) {
     // Decrypt
     const key = new NodeRSA(private_key)
-    const decrypted = key.decrypt(text, 'base64');
-    console.log('encrypted: ', encrypted);
+    const decrypted = key.decrypt(encrypted, 'base64');
+    console.log('encrypted: ', decrypted);
     return decrypted;
   }
 
@@ -67,19 +61,7 @@ class Indentity {
    * @param userId - the unique Id for the user
    * @returns - nothing
    */
-  async validateIndentity(ctx, userId) {
-
-    const buffer = await ctx.stub.getState(userId);
-    
-    if (!!buffer && buffer.length > 0) {
-      let org = JSON.parse(buffer.toString());
-      
-    } else {
-      console.log('This ID is not registered to an org.');
-      return false;
-    }
-  }
-
+  async validateIndentity(ctx, userId) {}
   async validateBirthCertificate() {
     // Call external API
   }

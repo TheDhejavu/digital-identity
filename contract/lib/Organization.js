@@ -16,22 +16,16 @@ class Organization {
    * @returns - organization object
    */
   constructor(ctx, args) {
-
-    if (this.validateOrganization(ctx, voterId)) {
-
-      this.name = args.name;
-      this.location = args.location;
-      this.description = args.description;
-      this.orgId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-      this.type = args.type;
-      if (this.__isContract) {
-        delete this.__isContract;
-      }
-
-      return this;
-    } else {
-      throw new Error ('an Organization with thi ID');
+    this.name = args.name;
+    this.location = args.location;
+    this.description = args.description;
+    this.orgId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    this.type = args.type;
+    this.address = crypto.randomBytes(20).toString('hex');
+    if (this.__isContract) {
+      delete this.__isContract;
     }
+    return this;
   }
 
   /**
@@ -44,18 +38,7 @@ class Organization {
    * @param orgId - the unique Id for the organzation
    * @returns - nothing
    */
-  async validateOrganization(ctx, orgId) {
-
-    const buffer = await ctx.stub.getState(orgId);
-    
-    if (!!buffer && buffer.length > 0) {
-      let org = JSON.parse(buffer.toString());
-      
-    } else {
-      console.log('This ID is not registered to an org.');
-      return false;
-    }
-  }
+  async validateOrganization(ctx, orgId) {}
 }
 
 module.exports = Organization;

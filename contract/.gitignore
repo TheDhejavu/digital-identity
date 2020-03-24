@@ -7,5 +7,5 @@ node_modules/
 .env
 
 ##
-keys/
+keys
 config.json

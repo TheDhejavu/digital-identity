@@ -27,7 +27,7 @@ fs.openSync('keys/private.pem', 'w');
 fs.writeFileSync('keys/private.pem', privateKey, 'utf8');
 
 
-// var crypto = require("crypto");
-// var address = crypto.randomBytes(20).toString('hex');
+var crypto = require("crypto");
+var address = crypto.randomBytes(20).toString('hex');
 
 // console.log(address);
