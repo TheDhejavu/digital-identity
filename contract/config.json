@@ -1,9 +1,0 @@
-{
-  "connection_file": "ibpConnection.json",
-  "appAdmin": "app-admin",
-  "appAdminSecret": "app-adminpw:nZCFvURJyOCXhWZB/gCv6KVK8MtZBOJ04SrEx2",
-  "orgMSPID": "digitalId",
-  "caName": "https://50.23.5.248:32087",
-  "userName": "V1",
-  "gatewayDiscovery": { "enabled": true, "asLocalhost": false }
-}
