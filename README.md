@@ -6,11 +6,11 @@ The traditional identity systems of today are fragmented, insecure, and exclusiv
 
 ## How it works 
 
-### Flow Diagram 1
+### Flow Diagram(Developer) 1
 
 <img alt="Digital identity logo" src="https://raw.githubusercontent.com/TheDhejavu/node-digital-identity/master/assets/digital-identity.png">
 
-### Flow Diagram(Main) 2
+### Flow Diagram(User) 2
 <img alt="Digital identity logo" src="https://raw.githubusercontent.com/TheDhejavu/node-digital-identity/master/assets/node-digital-identity.png">\
 
 
