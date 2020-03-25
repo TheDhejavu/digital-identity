@@ -11,7 +11,9 @@ The traditional identity systems of today are fragmented, insecure, and exclusiv
 <img alt="Digital identity logo" src="https://raw.githubusercontent.com/TheDhejavu/node-digital-identity/master/assets/digital-identity.png">
 
 ### Flow Diagram(Main) 2
-<img alt="Digital identity logo" src="https://raw.githubusercontent.com/TheDhejavu/node-digital-identity/master/assets/node-digital-identity.png">
+<img alt="Digital identity logo" src="https://raw.githubusercontent.com/TheDhejavu/node-digital-identity/master/assets/node-digital-identity.png">\
+
+
 ## Framework & Tools
 - NodeJS (API & Smart contract)
 - Hyperledge Fabric v2.0
