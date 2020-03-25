@@ -3,16 +3,13 @@
 
 //import Hyperledger Fabric 1.4 SDK
 const { Contract } = require('fabric-contract-api');
-const path = require('path');
-const fs = require('fs');
 const NodeRSA = require('node-rsa');
 
-//import our file which contains our constructors and auxiliary function
 let Organization = require('./Organization.js');
 let Identity = require('./Indentity');
 let IdentityRequestSummary = require('./IdentityRequestSummary.js');
 
-class IdentityContract{
+class IdentityContract extends Contract{
     init() {
         console.log("Initialize Hyperldeger fabric smart contract. Viola!!!");
     }
@@ -67,15 +64,15 @@ class IdentityContract{
    * Reads a key-value pair from the world state, based on the key given.
    *  
    * @param myAssetId - the key of the asset to read
-   * @returns - nothing - but reads the value in the world state
+   * @returns {JSON}
    */
     async readMyAsset(ctx, myAssetId) {
 
         const exists = await this.myAssetExists(ctx, myAssetId);
 
         if (!exists) {
-        // throw new Error(`The my asset ${myAssetId} does not exist`);
-        let response = {};
+            // throw new Error(`The my asset ${myAssetId} does not exist`);
+            let response = {};
             response.error = `The my asset ${myAssetId} does not exist`;
             return response;
         }
@@ -89,8 +86,8 @@ class IdentityContract{
      * myAssetExists
      *
      * Checks to see if a key exists in the world state. 
-     * @param myAssetId - the key of the asset to read
-     * @returns boolean indicating if the asset exists or not. 
+     * @param {String} myAssetId - the key of the asset to read
+     * @returns {Boolean} indicating if the asset exists or not. 
      */
     async myAssetExists(ctx, myAssetId) {
 
@@ -99,13 +96,13 @@ class IdentityContract{
     }
     /**
      *
-     * queryAllOrgIdentityRequest()
+     * queryRequestsByQueryString()
      * 
-     * @param args.userAddress {String}
-     * @param args.orgAddress {String}
+     * @param {String} args.userAddress
+     * @param {String} args.orgAddress 
      * @returns
     */
-    queryIdentityRequestByOrgOrUser(ctx, { userAddress, orgAddress }) {
+    queryData(ctx, { userAddress, orgAddress }) {
         let queryString = {
             selector: {}
         };
@@ -121,8 +118,9 @@ class IdentityContract{
      *
      * requestUserIdentity()
      * 
-     * @param args.userAddress
-     * @param args.orgAddress
+     * @param {Context} ctx the transaction context
+     * @param {String} args.userAddress
+     * @param {String} args.orgAddress
      * @returns {Object}
     */
     requestUserIdentity(ctx, args) {
@@ -143,25 +141,33 @@ class IdentityContract{
      *
      * grantOrgAccessToIdentity()
      * 
-     * @param args.userAddress
-     * @param args.orgAddress
-     * @param args.privateKey
-     * @param args.requestId
-     * @returns
+     * @param {String} args.userAddress
+     * @param {String} args.orgAddress
+     * @param {String} args.privateKey
+     * @param {String} args.requestId
+     * @returns {Object}
     */
     grantOrgAccessToIdentity(ctx, args) {
         let response = {};
         args = JSON.parse(args);
-        let requestResults = this.queryRequestByUserAndOrg( args.userAddress, args.orgAddress);
+        
+        let requestResults = this.queryData( args );
+
         if(!requestResults && requestResults[0]){
-            response.error = 'Invalid request';
+            response.error = 'No result found';
             return response;
         }
+        
         requestResults[0].granted = true;
 
         let requestResult = await ctx.stub.putState(requestId, Buffer.from(JSON.stringify(requestResults[0])));
-        let identity = this.readMyAsset(args.userAddress);
-        identity = Identity.decrypt(ctx, args.privateKey, identity);
+        if(!requestResult){
+            response.error = 'An Error Occurred';
+            return response;
+        }
+
+        let user = this.readMyAsset(args.userAddress);
+        let identity = Identity.decrypt(ctx, args.privateKey, user.identity);
 
         response = {
             message: "User Identity decrypted and sent",
@@ -169,46 +175,36 @@ class IdentityContract{
         }
         return response
     }
-     /**
-     *
-     * queryRequestByUserAndOrg()
-     * 
-     * @param userAddress
-     * @param orgAddress
-     * @returns {Object}
-    */
-    queryRequestByUserAndOrg(userAddress, orgAddress) {
-        let queryString = {
-            selector: {
-              userAddress: userAddress,
-              orgAddress: orgAddress,
-            }
-        };
-      
-        let requestResults = JSON.parse(await this.queryWithQueryString(ctx, JSON.stringify(queryString)));
-        return  requestResults
-    }
     /**
      *
      * revokeOrgAccessToIdentity()
      * 
-     * @param 
+     * @param {String} args.requestId 
+     * @param {String} args.userAddress 
+     * @param {String} args.orgAddress
      * @returns {Object}
     */
     revokeOrgAccessToIdentity(ctx, args) {
         let response = {};
         args = JSON.parse(args);
-        let requestResults = this.queryRequestByUserAndOrg( args.userAddress, args.orgAddress);
+
+        let requestResults = this.queryData({
+            userAdress: args.userAddress, 
+            orgAddres: args.orgAddress
+        });
+
         if(!requestResults && requestResults[0]){
-            response.error = 'Invalid request';
+            response.error = 'No result found';
             return response;
         }
 
         requestResults[0].granted = false;
 
-        let requestResult = await ctx.stub.putState(requestId, Buffer.from(JSON.stringify(requestResults[0])));
+        let requestResult = await ctx.stub.putState(args,requestId, Buffer.from(JSON.stringify(requestResults[0])));
 
-        return requestResult;
+        return {
+            message: "Revoked Successfully"
+        };
     }
     /**
      *
@@ -224,7 +220,7 @@ class IdentityContract{
         let newOrg = await new Organization(ctx, args);
        
         //update state with new organisation
-        // await ctx.stub.putState(newOrg.address, Buffer.from(JSON.stringify(newOrg)));
+        await ctx.stub.putState(newOrg.address, Buffer.from(JSON.stringify(newOrg)));
         
         const response = {
             address: newOrg.address,
@@ -253,7 +249,7 @@ class IdentityContract{
         let signNewUserIdentity = newUserIdentity.encrypt(ctx, publicKey);
         
         //update state with new identity
-        // await ctx.stub.putState(newUserIdentity.address, signNewUserIdentity);
+        await ctx.stub.putState(newUserIdentity.address,  Buffer.from(JSON.stringify({ identity: signNewUserIdentity })));
         
         const response = {
             address: newUserIdentity.address,
