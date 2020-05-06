@@ -1,4 +1,5 @@
 'use strict';
+const crypto = require("crypto");
 
 class IdentityRequestSummary {
 
@@ -15,12 +16,12 @@ class IdentityRequestSummary {
    */
   constructor(ctx, args) {
 
-    this.identityAddress = args.identityAddress;
+    this.identityId = args.identityId;
     this.description = args.description;
-    this.userAddress = args.userAddress;
-    this.orgAddress = args.orgAddress;
-    this.granted = false;
-    this.id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    this.orgId = args.orgId;
+    this.status = 'pending';
+    this.dataType = 'identity-request';
+    this.uid = crypto.randomBytes(20).toString('hex');
     if (this.__isContract) {
         delete this.__isContract;
     }

@@ -1,0 +1,14 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+##config
+config.json
+fabric_connection.json
+
+##keys
+keys/
+
+# Dependency directories
+node_modules/

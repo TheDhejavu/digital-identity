@@ -1,10 +1,8 @@
 
 'use strict';
 const NodeRSA = require('node-rsa');
-const crypto = require("crypto");
 
 class Indentity {
-
   /**
    *
    * User
@@ -22,13 +20,9 @@ class Indentity {
   constructor(ctx, args) {
     this.firstName = args.firstName;
     this.email = args.email;
-    this.passCode = args.passCode;
     this.phoneNumber = args.phoneNumber;
     this.lastName = args.lastName;
     this.residentialAddress = args.residentialAddress;
-    this.id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    this.address = crypto.randomBytes(20).toString('hex');
-    this.type = 'user';
     if (this.__isContract) {
       delete this.__isContract;
     }
@@ -37,17 +31,15 @@ class Indentity {
 
   async encrypt(ctx, public_key) {
     // Encrypt
-    const key = new NodeRSA(public_key)
+    const key = new NodeRSA(public_key);
     const encrypted = key.encrypt(JSON.stringify(this), 'base64');
-    console.log('encrypted: ', encrypted);
     return encrypted;
   }
 
   static async decrypt(ctx, private_key, encrypted) {
     // Decrypt
     const key = new NodeRSA(private_key)
-    const decrypted = key.decrypt(encrypted, 'base64');
-    console.log('encrypted: ', decrypted);
+    const decrypted = key.decrypt(encrypted, 'utf-8');
     return decrypted;
   }
 

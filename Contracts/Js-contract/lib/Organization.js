@@ -1,5 +1,5 @@
 'use strict';
-
+const crypto = require("crypto");
 class Organization {
 
   /**
@@ -19,9 +19,10 @@ class Organization {
     this.name = args.name;
     this.location = args.location;
     this.description = args.description;
-    this.orgId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    this.passCode = args.passCode;
     this.type = args.type;
-    this.address = crypto.randomBytes(20).toString('hex');
+    this.dataType = "organization"
+    this.uid = crypto.randomBytes(20).toString('hex');
     if (this.__isContract) {
       delete this.__isContract;
     }

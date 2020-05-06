@@ -1,10 +1,9 @@
 {
-  "name": "digital-identity",
+  "name": "digital-identity-cli",
   "version": "1.0.0",
   "description": "Digital Identity is a smart contract for hyperledger fabric blockchain",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "bin": {
+    "dig": "./bin/index.js"
   },
   "keywords": [
     "hyperledger",
@@ -15,11 +14,13 @@
   "author": "Akinola Ayodeji",
   "license": "ISC",
   "dependencies": {
+    "colors": "^1.4.0",
+    "commander": "^5.1.0",
     "fabric-ca-client": "^1.4.8",
-    "fabric-contract-api": "^2.0.0",
-    "fabric-network": "^1.4.8",
-    "install": "^0.13.0",
-    "node-rsa": "^1.0.7",
-    "npm": "^6.14.3"
+    "node-rsa": "^1.0.7"
+  },
+  "devDependencies": {
+    "fabric-client": "^1.4.8",
+    "fabric-network": "^1.4.8"
   }
 }
